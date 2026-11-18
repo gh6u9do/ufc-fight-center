@@ -1,75 +1,76 @@
-# React + TypeScript + Vite
+# UFC Fight Center
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Современный mobile-first дашборд (`max-width: 480px`) для мониторинга ростера бойцов UFC, просмотра грядущих турниров и ведения персонального списка «Любимых бойцов» с отслеживанием их статистики.
 
-Currently, two official plugins are available:
+## Возможности
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Главная страница (`/`)
 
-## React Compiler
+- Интерактивный список ТОП-бойцов (ростер).
+- Фильтрация по **весовым дивизионам** (Heavyweight, Lightweight, Welterweight и т.д.) и поиск по фамилии — состояние завязано строго на **URL Search Params** (фильтр можно шарить ссылкой).
+- Анонс ближайшего номерного турнира (например, UFC 334 / 335) с таймером обратного отсчёта.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Страница бойца (`/fighter/$fighterId`)
 
-## Expanding the ESLint configuration
+- Профиль бойца: аватар, рекорд (W-L-D), страна, статус (Чемпион / Топ-контендер).
+- Радарная диаграмма или блоки характеристик (Striking, Grappling, Тейкдауны).
+- Кнопка «Добавить в свой Кэмп» (Watchlist).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Глобальное состояние
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **My Camp** — список избранных бойцов, за которыми пользователь следит особенно пристально. Сохраняется в `LocalStorage`.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Технологии
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Слой | Стек |
+| --- | --- |
+| Сборка | [Vite](https://vite.dev) |
+| UI | [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org) |
+| Роутинг | [TanStack Router](https://tanstack.com/router) (type-safe, file-based routes, validateSearch для search params) |
+| Серверное состояние | [TanStack Query](https://tanstack.com/query) |
+| Клиентское состояние | [Zustand](https://zustand.docs.pmnd.rs) (+ persist middleware для LocalStorage) |
+| Валидация данных | [Zod](https://zod.dev) |
+| Стили | [Tailwind CSS 4](https://tailwindcss.com) |
+| Иконки | [lucide-react](https://lucide.dev) |
+| Качество кода | ESLint + typescript-eslint |
 
+## Установка и запуск
+
+```bash
+# установка зависимостей
+npm install
+
+# dev-сервер с HMR
+npm run dev
+
+# продакшн-сборка (tsc + vite build)
+npm run build
+
+# предпросмотр сборки
+npm run preview
+
+# линт
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Структура проекта
 
 ```
+src/
+├── routes/           # file-based роуты TanStack Router
+│   └── __root.tsx    # корневой лейаут
+├── utils/            # вспомогательные утилиты (cn и др.)
+├── main.tsx          # точка входа: создание роутера и монтирование React
+├── index.css         # глобальные стили (Tailwind)
+└── routeTree.gen.ts  # генерируется автоматически роутер-плагином
+```
+
+> `src/routeTree.gen.ts` генерируется плагином `@tanstack/router-plugin` — не редактируйте его вручную.
+
+## Roadmap
+
+- [ ] Главная страница: ростер, фильтры и поиск через URL Search Params
+- [ ] Анонс турнира с таймером обратного отсчёта
+- [ ] Страница бойца с профилем и характеристиками
+- [ ] Watchlist «My Camp» с сохранением в LocalStorage
+- [ ] Интеграция с реальным API данных UFC
