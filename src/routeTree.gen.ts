@@ -9,27 +9,87 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as CampRouteImport } from './routes/camp'
+import { Route as FighterFighterIdRouteImport } from './routes/fighter.$fighterId'
 
-export interface FileRoutesByFullPath {}
-export interface FileRoutesByTo {}
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampRoute = CampRouteImport.update({
+  id: '/camp',
+  path: '/camp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FighterFighterIdRoute = FighterFighterIdRouteImport.update({
+  id: '/fighter/$fighterId',
+  path: '/fighter/$fighterId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/camp': typeof CampRoute
+  '/fighter/$fighterId': typeof FighterFighterIdRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/camp': typeof CampRoute
+  '/fighter/$fighterId': typeof FighterFighterIdRoute
+}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/camp': typeof CampRoute
+  '/fighter/$fighterId': typeof FighterFighterIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
+  fullPaths: '/' | '/camp' | '/fighter/$fighterId'
   fileRoutesByTo: FileRoutesByTo
-  to: never
-  id: '__root__'
+  to: '/' | '/camp' | '/fighter/$fighterId'
+  id: '__root__' | '/' | '/camp' | '/fighter/$fighterId'
   fileRoutesById: FileRoutesById
 }
-export interface RootRouteChildren {}
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  CampRoute: typeof CampRoute
+  FighterFighterIdRoute: typeof FighterFighterIdRoute
 }
 
-const rootRouteChildren: RootRouteChildren = {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/camp': {
+      id: '/camp'
+      path: '/camp'
+      fullPath: '/camp'
+      preLoaderRoute: typeof CampRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fighter/$fighterId': {
+      id: '/fighter/$fighterId'
+      path: '/fighter/$fighterId'
+      fullPath: '/fighter/$fighterId'
+      preLoaderRoute: typeof FighterFighterIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  CampRoute: CampRoute,
+  FighterFighterIdRoute: FighterFighterIdRoute,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
