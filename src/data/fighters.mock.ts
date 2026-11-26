@@ -190,3 +190,32 @@ export const MOCK_FIGHTERS: IFighter[] = [
     stats: { strikingAccuracy: 56, takedownDefense: 86, koWins: 10, subWins: 1 },
   },
 ];
+
+
+const DIVISIONS: IFighter['division'][] = [
+  'Heavyweight', 'Light Heavyweight', 'Middleweight', 
+  'Welterweight', 'Lightweight', 'Featherweight', 'Bantamweight'
+];
+
+// Генерируем по 18 бойцов (Топ-15 + 3 вне рейтинга) для тестов пагинации
+const GENERATED_FIGHTERS: IFighter[] = DIVISIONS.flatMap((division) => 
+  Array.from({ length: 18 }, (_, index) => {
+    const rank = index + 1;
+    const isUnranked = rank > 15;
+    
+    return {
+      id: `${division.toLowerCase().replace(/\s+/g, '-')}-fighter-${rank}`,
+      name: `Contender #${rank} (${division.slice(0, 3)})`,
+      nickname: isUnranked ? 'Prospect' : 'Top Contender',
+      division,
+      record: `${20 - Math.floor(rank / 2)}-${Math.floor(rank / 3)}-0`,
+      country: '🇺🇸',
+      isChampion: false,
+      rank: isUnranked ? undefined : rank, // После 15-го места ранга нет!
+      imageUrl: `https://ui-avatars.com{rank}&background=27272a&color=fff&bold=true`,
+      stats: { strikingAccuracy: 50, takedownDefense: 70, koWins: 8, subWins: 4 },
+    };
+  })
+);
+
+export const ALL_MOCK_FIGHTERS: IFighter[] = [...MOCK_FIGHTERS, ...GENERATED_FIGHTERS];
