@@ -1,4 +1,5 @@
 import type { IFighter } from '../types/fighter';
+import { getAvatarFallbackUrl } from '../utils/avatar';
 
 // Данные актуализированы по официальному сайту ufc.com (рейтинги и профили бойцов)
 export const MOCK_FIGHTERS: IFighter[] = [
@@ -194,7 +195,7 @@ export const MOCK_FIGHTERS: IFighter[] = [
 
 const DIVISIONS: IFighter['division'][] = [
   'Heavyweight', 'Light Heavyweight', 'Middleweight', 
-  'Welterweight', 'Lightweight', 'Featherweight', 'Bantamweight'
+  'Welterweight', 'Lightweight', 'Featherweight', 'Bantamweight', 'Flyweight'
 ];
 
 // Генерируем по 18 бойцов (Топ-15 + 3 вне рейтинга) для тестов пагинации
@@ -212,7 +213,7 @@ const GENERATED_FIGHTERS: IFighter[] = DIVISIONS.flatMap((division) =>
       country: '🇺🇸',
       isChampion: false,
       rank: isUnranked ? undefined : rank, // После 15-го места ранга нет!
-      imageUrl: `https://ui-avatars.com{rank}&background=27272a&color=fff&bold=true`,
+      imageUrl: getAvatarFallbackUrl(`Contender #${rank} (${division.slice(0, 3)})`),
       stats: { strikingAccuracy: 50, takedownDefense: 70, koWins: 8, subWins: 4 },
     };
   })

@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { fetchFighters } from '../api/fighterApi'
-import { FighterCard } from '../features/roster/FigtherCard';
+import { DivisionSection } from '../features/roster/DivisionSection';
+import { DivisionDevider } from '../components/DivisionDevider';
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -9,9 +10,8 @@ export const Route = createFileRoute('/')({
 
 
 
-
 function HomePage() {
-  // используем useQuery для получения бойцов
+  // используем useQuery для получения бойцов через API
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['fighters'],
     queryFn: fetchFighters
@@ -24,7 +24,7 @@ function HomePage() {
     )
   }
 
-  // если при получении ошибка показываем сообщение
+  // если при получении возникла ошибка -  показываем сообщение
   if (isError) {
     return (
       <span className='text-center text-ufc-red py-10'>{error.message}</span>
@@ -34,21 +34,23 @@ function HomePage() {
   // достаем только тех кто в рейтинге p4p, фильтруем их по возрастанию
   const filteredP4p = data.filter((fighter) => fighter.p4pRank !== undefined).sort((a, b) => a.p4pRank! - b.p4pRank!);
 
+  // достаем бойцов категории FLYWEIGHT
+  const filteredFlyweight = data.filter((fighter) => fighter.division === 'Flyweight');
+
   return (
-    <section className='flex flex-col gap-4'>
-      <div className='flex flex-col items-center gap-5'>
-        <h2 className='uppercase italic font-black text-2xl tracking-wider text-ufc-text whitespace-nowrap'>pound for pound</h2>
-        <ul className='flex flex-col gap-4'>
-          {filteredP4p.map((fighter) => (
-            <li key={fighter.id}>
-              <FighterCard
-                fighter={fighter}
-                listType='p4p'
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+    <section className='flex flex-col gap-6'>
+      <DivisionSection
+        title='pound for pound'
+        fighters={filteredP4p}
+        isP4P
+      />
+      <DivisionDevider />
+      <DivisionSection
+        title='flyweight'
+        weightLimit='125lbs'
+        fighters={filteredFlyweight}
+        isP4P={false}
+      />
     </section>
   )
 }

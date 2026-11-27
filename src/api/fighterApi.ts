@@ -1,4 +1,4 @@
-import { MOCK_FIGHTERS } from "../data/fighters.mock";
+import { ALL_MOCK_FIGHTERS } from "../data/fighters.mock";
 import type { IFighter } from "../types/fighter";
 
 
@@ -6,7 +6,7 @@ import type { IFighter } from "../types/fighter";
 export async function fetchFighters(): Promise<IFighter[]> {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(MOCK_FIGHTERS);
+            resolve(ALL_MOCK_FIGHTERS);
         }, 600)
     })
 }
@@ -17,7 +17,7 @@ export async function fetchFighterById(id: string): Promise<IFighter> {
     return new Promise((resolve, reject) => {
 
         // находим бойца
-        const fighter = MOCK_FIGHTERS.find((fighter) => fighter.id === id);
+        const fighter = ALL_MOCK_FIGHTERS.find((fighter) => fighter.id === id);
 
         setTimeout(() => {
             // если боец не найден выбрасываем ошибку чтобы React Query смог перевести компонент в состояние isError
